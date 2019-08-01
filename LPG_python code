@@ -1,0 +1,64 @@
+from selenium import webdriver
+from selenium.webdriver.support.ui import Select
+import time
+import pandas as pd
+import glob
+import os
+import shutil
+
+
+# launch the brower
+driver = webdriver.Chrome(r'C:\Users\SKTelecom\Downloads\chromedriver_win32\chromedriver.exe')
+driver.implicitly_wait(20)
+
+# opinet page open
+driver.get('http://www.opinet.co.kr/searRgSelect.do')
+driver.get('http://www.opinet.co.kr/searRgSelect.do')
+
+# click 충전소
+LPG_BTN = driver.find_element_by_id('LPG_BTN').click()
+
+# select 시도 level from a drop-down menu
+select_SIDO = Select(driver.find_element_by_id('SIDO_NM0'))
+select_SIDO.select_by_value('서울특별시')
+time.sleep(3)
+
+# select 시군구 level from a drop-down menu
+SIGUNGUlist = ['강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구']
+for i in range(25) :
+    select_SIGUNGU = Select(driver.find_element_by_id('SIGUNGU_NM0'))
+    select_SIGUNGU.select_by_value(SIGUNGUlist[i])
+    time.sleep(3)
+
+# 조회 button click
+    findButton = driver.find_element_by_id("searRgSelect")
+    findButton.click()
+    time.sleep(3)
+
+# 엑셀저장 button click
+    saveExcel = driver.find_element_by_id("glopopd_excel")
+    saveExcel.click()
+    time.sleep(3)
+
+# 파일 디렉토리 이동
+input_path = r'C:\Users\SKTelecom\Downloads'
+input_path_2 = r'C:\Users\SKTelecom\Downloads\Oil_Project\downdata_LPG/'
+all_files = glob.glob(os.path.join(input_path, '지역_위치별(충전소)*'))
+
+for files in all_files:
+    shutil.move(files,input_path_2)
+
+output_file = r'C:\Users\SKTelecom\Downloads\Oil_Project\mergeddata_LPG\merged_data_LPG.csv'
+all_files = glob.glob(os.path.join(input_path_2, '지역_위치별(충전소)*'))
+all_data_frames = []
+
+
+for file in all_files:
+    data_frame = pd.read_excel(file, index_col=None)
+    data_frame = data_frame.drop([0,1])
+    all_data_frames.append(data_frame)
+
+
+# csv 파일 생성
+data_frame_concat = pd.concat(all_data_frames, axis=0, ignore_index=True)
+data_frame_concat.to_csv(output_file, index = False, encoding='ms949')
