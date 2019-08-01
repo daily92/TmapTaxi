@@ -1,3 +1,4 @@
+# 1. terminal 에서 pip3 install selenium 후 에디터에서 오류메세지 뜨면 오류느낌표 클릭 후 install package
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 import time
@@ -8,6 +9,7 @@ import shutil
 
 
 # launch the brower
+# 크롬드라이버 설치 > 해당 파일 위치 알아놓기
 driver = webdriver.Chrome(r'C:\Users\SKTelecom\Downloads\chromedriver_win32\chromedriver.exe')
 driver.implicitly_wait(20)
 
@@ -41,6 +43,9 @@ for i in range(25) :
     time.sleep(3)
 
 # 파일 디렉토리 이동
+# input_path는 컴퓨터의 download 폴더 위치로 지정
+# input_path2는 LPG 파일 모아 놓을 새 폴더 만들어서 위치 지정
+# output_file은 LPG 파일 모아 놓을 새 폴더 내 > 병합한 문서 따로 놓을 새 폴더 만들어서 위치 지정
 input_path = r'C:\Users\SKTelecom\Downloads'
 input_path_2 = r'C:\Users\SKTelecom\Downloads\Oil_Project\downdata_LPG/'
 all_files = glob.glob(os.path.join(input_path, '지역_위치별(충전소)*'))
